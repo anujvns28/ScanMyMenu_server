@@ -1,22 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const passport = require("../utility/passport.js");
 
 const {
-    login,
-    signup,
-} = require('../controller/auth');
+  googleCallback,
+  login,
+  signup,
+  loginWithToken,
+} = require("../controller/auth.js");
+const { auth } = require("../middleware/auth.js");
 
+// login
+router.post("/login", login);
 
+// signup
+router.post("/signup", signup);
 
-// ********************************************************************************************************
-//                                      Authentication routes
-// ********************************************************************************************************
+// login with token
+router.get("/loginWithToken", auth, loginWithToken);
 
-// Route for user login
-router.post("/login", login)
-
-// Route for user signup
-router.post("/signup", signup)
-
-
-module.exports = router
+module.exports = router;

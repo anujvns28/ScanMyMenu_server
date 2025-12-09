@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    googleId: {
+      type: String,
+    },
 
     email: {
       type: String,
@@ -23,12 +26,11 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       minlength: 6,
-      select: false,  
     },
 
     role: {
       type: String,
-      enum: ["owner","Admin"],
+      enum: ["owner", "Admin"],
       default: "owner",
     },
 
@@ -47,8 +49,6 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
-
   },
   { timestamps: true }
 );
