@@ -1,6 +1,6 @@
 
 const bcrypt = require("bcrypt");
-const { default: user } = require("../models/user");
+const user = require("../models/user");
 const { generateToken } = require("../utility/generateToken");
 
 exports.signup = async (req, res) => {
@@ -109,7 +109,7 @@ exports.googleCallback = (req, res) => {
 
 exports.loginWithToken = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.user.id;
 
     const userDetails = await user.findById(userId);
     if (!userDetails) {

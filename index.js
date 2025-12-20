@@ -7,6 +7,9 @@ const session = require("express-session");
 
 const authRoutes = require("./routes/auth.js");
 const googleAuthRoutes = require("./routes/google.js");
+const categoryRoutes = require("./routes/category.js");
+const { cloudinaryConnect } = require("./config/cloudinary.js");
+const fileUpload = require("express-fileupload");
 
 const port = process.env.PORT || 4000;
 
@@ -23,6 +26,13 @@ app.use(
 app.use(express.json());
 
 app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
+app.use(
   session({
     secret: "secretKey",
     resave: false,
@@ -36,6 +46,9 @@ app.use(passport.session());
 //mounting
 app.use("/api/v1/auth", authRoutes);
 app.use("/auth", googleAuthRoutes);
+app.use("/api/v1/category", categoryRoutes);
+
+cloudinaryConnect();
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
