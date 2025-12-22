@@ -8,6 +8,7 @@ const session = require("express-session");
 const authRoutes = require("./routes/auth.js");
 const googleAuthRoutes = require("./routes/google.js");
 const categoryRoutes = require("./routes/category.js");
+const tagRoutes = require("./routes/tag.js");
 const { cloudinaryConnect } = require("./config/cloudinary.js");
 const fileUpload = require("express-fileupload");
 
@@ -47,6 +48,7 @@ app.use(passport.session());
 app.use("/api/v1/auth", authRoutes);
 app.use("/auth", googleAuthRoutes);
 app.use("/api/v1/category", categoryRoutes);
+app.use("/api/v1/tag", tagRoutes);
 
 cloudinaryConnect();
 
