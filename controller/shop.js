@@ -1,11 +1,12 @@
+const { default: mongoose } = require("mongoose");
 const Shop = require("../models/shop");
 const { uploadImageToCloudinary } = require("../utility/ImageUploader");
 
 exports.updateShopProfile = async (req, res) => {
   try {
     const { name } = req.body;
-    const image = req.files?.image;
-    const userId = req.userId;
+    const image = req.files?.logo;
+    const userId = req.user._id;
 
     let shop = await Shop.findOne({ owner: userId });
     if (!shop) {
@@ -16,7 +17,6 @@ exports.updateShopProfile = async (req, res) => {
 
     if (name) {
       shop.shopProfile.name = name;
-      shop.shopProfile.slug = name.toLowerCase().replace(/\s+/g, "-");
     }
 
     if (image) {
@@ -26,7 +26,6 @@ exports.updateShopProfile = async (req, res) => {
 
     shop.progress = Math.max(shop.progress, 10);
     shop.status.creationStep = Math.max(shop.status.creationStep, 1);
-    
 
     await shop.save();
 
@@ -44,11 +43,10 @@ exports.updateShopProfile = async (req, res) => {
   }
 };
 
-
 exports.updateContactInfo = async (req, res) => {
   try {
     const { phone, email, ownerName } = req.body;
-    const userId = req.userId;
+    const userId = req.user._id;
 
     let shop = await Shop.findOne({ owner: userId });
     if (!shop) {
@@ -80,11 +78,10 @@ exports.updateContactInfo = async (req, res) => {
   }
 };
 
-
 exports.updateShopAddress = async (req, res) => {
   try {
     const { area, city, pincode } = req.body;
-    const userId = req.userId;
+    const userId = req.user._id;
 
     let shop = await Shop.findOne({ owner: userId });
     if (!shop) {
@@ -116,11 +113,11 @@ exports.updateShopAddress = async (req, res) => {
   }
 };
 
-
 exports.updateShopTiming = async (req, res) => {
   try {
     const { openTime, closeTime } = req.body;
-    const userId = req.userId;
+    console.log(openTime, closeTime);
+    const userId = req.user._id;
 
     let shop = await Shop.findOne({ owner: userId });
     if (!shop) {
@@ -131,8 +128,8 @@ exports.updateShopTiming = async (req, res) => {
     shop.timing.openTime = openTime;
     shop.timing.closeTime = closeTime;
 
-    shop.progress = Math.max(shop.progress, 10);
-    shop.status.creationStep = Math.max(shop.status.creationStep, 1);
+    shop.progress = Math.max(shop.progress, 40);
+    shop.status.creationStep = Math.max(shop.status.creationStep, 4);
 
     // Check if profile is fully completed
     const isComplete =
@@ -167,11 +164,9 @@ exports.updateShopTiming = async (req, res) => {
   }
 };
 
-
 exports.getMyShop = async (req, res) => {
   try {
-    const userId = req.userId;
-
+    const userId = req.user._id;
     const shop = await Shop.findOne({ owner: userId });
 
     if (!shop) {
@@ -194,7 +189,3 @@ exports.getMyShop = async (req, res) => {
     });
   }
 };
-
-
-
-
