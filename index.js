@@ -10,6 +10,7 @@ const googleAuthRoutes = require("./routes/google.js");
 const categoryRoutes = require("./routes/category.js");
 const tagRoutes = require("./routes/tag.js");
 const shopRoutes = require("./routes/shop.js");
+const productRoutes = require("./routes/Product.js");
 const shop_categoryRoutes = require("./routes/shopCategory.js");
 const { cloudinaryConnect } = require("./config/cloudinary.js");
 const fileUpload = require("express-fileupload");
@@ -53,7 +54,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/tag", tagRoutes);
 app.use("/api/v1/shop", shopRoutes);
 app.use("/api/v1/shop-category", shop_categoryRoutes);
-
+app.use("/api/v1/product", productRoutes);
 cloudinaryConnect();
 
 app.listen(port, () => {

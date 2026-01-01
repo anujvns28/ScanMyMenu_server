@@ -5,42 +5,48 @@ const shopCategorySchema = new mongoose.Schema(
     shop: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shop",
-      required: true
+      required: true,
     },
 
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Categoroy",
-      required: true
+      ref: "Category",
+      required: true,
     },
 
     displayName: {
-      type: String
+      type: String,
     },
 
     // Menu me category ka order
     order: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     isEnabled: {
       type: Boolean,
-      default: true
+      default: true,
     },
 
     // Kya ye category menu me highlight ho
     isFeatured: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     tags: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Tag"
-    }
-  ]
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
+    products: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   { timestamps: true }
 );
