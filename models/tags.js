@@ -25,8 +25,7 @@ const tagSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["food", "shop"],
-      default: "food",
+      enum: ["category", "product"],
     },
 
     isActive: {

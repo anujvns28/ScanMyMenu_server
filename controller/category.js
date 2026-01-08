@@ -4,7 +4,7 @@ const { uploadImageToCloudinary } = require("../utility/ImageUploader");
 
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, dietType } = req.body;
 
     if (!name || !description) {
       return res.status(400).json({
@@ -35,18 +35,17 @@ exports.createCategory = async (req, res) => {
       process.env.FOLDER_NAME
     );
 
-    
     await Category.create({
       name,
       description,
-      image: uploadImage    .secure_url,
+      image: uploadImage.secure_url,
+      dietType: dietType,
     });
 
     return res.status(201).json({
       success: true,
       message: "Category created successfully",
     });
-
   } catch (err) {
     console.error("Error creating category:", err);
     return res.status(500).json({
@@ -56,10 +55,9 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-
 exports.updateCategory = async (req, res) => {
   try {
-    const {categoryId, name, description } = req.body;
+    const { categoryId, name, description, dietType } = req.body;
 
     if (!categoryId) {
       return res.status(400).json({
@@ -102,6 +100,10 @@ exports.updateCategory = async (req, res) => {
       category.image = uploadResult.secure_url;
     }
 
+    if (dietType) {
+      category.dietType = dietType;
+    }
+
     await category.save();
 
     return res.status(200).json({
@@ -109,7 +111,6 @@ exports.updateCategory = async (req, res) => {
       message: "Category updated successfully",
       data: category,
     });
-
   } catch (err) {
     console.error("Error updating category:", err);
     return res.status(500).json({

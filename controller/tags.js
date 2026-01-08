@@ -23,7 +23,7 @@ exports.createTag = async (req, res) => {
     }
 
     // 2 Validate type
-    if (!["food", "shop"].includes(type)) {
+    if (!["category", "product"].includes(type)) {
       return res.status(400).json({
         success: false,
         message: "Type must be either 'food' or 'shop'",
@@ -68,11 +68,10 @@ exports.createTag = async (req, res) => {
   }
 };
 
-
 // ================= UPDATE TAG =================
 exports.updateTag = async (req, res) => {
   try {
-    const {tagId, name, color, type, isActive } = req.body;
+    const { tagId, name, color, type, isActive } = req.body;
 
     // Check tag exists
     const tag = await Tag.findById(tagId);
@@ -84,7 +83,7 @@ exports.updateTag = async (req, res) => {
     }
 
     //  Validate type (if provided)
-    if (type && !["food", "shop"].includes(type)) {
+    if (type && !["category", "product"].includes(type)) {
       return res.status(400).json({
         success: false,
         message: "Type must be either 'food' or 'shop'",

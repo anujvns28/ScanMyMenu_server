@@ -94,7 +94,7 @@ exports.createProduct = async (req, res) => {
 exports.getProductsByCategory = async (req, res) => {
   try {
     const { shopCategoryId } = req.body;
-
+    console.log(req.body);
     if (!shopCategoryId) {
       return res.status(400).json({
         success: false,
@@ -105,19 +105,17 @@ exports.getProductsByCategory = async (req, res) => {
     // Find category
     const category = await ShopCategory.findById(shopCategoryId)
       .populate({
-        path : "products",
-        populate : {
-          path :"tags"
-        }
+        path: "products",
+        populate: {
+          path: "tags",
+        },
       })
-
-    
+      .populate("tags");
 
     return res.status(200).json({
       success: true,
       data: category,
     });
-
   } catch (error) {
     console.error("Get products by category error:", error);
     return res.status(500).json({
@@ -127,11 +125,9 @@ exports.getProductsByCategory = async (req, res) => {
   }
 };
 
-
 exports.updateItemField = async (req, res) => {
   try {
     let { itemId, field, value } = req.body;
-
 
     if (!itemId || !field) {
       return res.status(400).json({
@@ -159,14 +155,12 @@ exports.updateItemField = async (req, res) => {
       });
     }
 
-    if(field == "tags"){
-      value  = req.body["value[]"]
+    if (field == "tags") {
+      value = req.body["value[]"];
     }
 
-
-   
     if (field === "image") {
-      if (!req.file) {
+      if (!req.files) {
         return res.status(400).json({
           success: false,
           message: "Image file is required",
@@ -174,7 +168,7 @@ exports.updateItemField = async (req, res) => {
       }
 
       const upload = await uploadImageToCloudinary(
-        req.file,
+        req.files.value,
         process.env.FOLDER_NAME
       );
 
@@ -191,7 +185,6 @@ exports.updateItemField = async (req, res) => {
       success: true,
       data: updatedItem,
     });
-
   } catch (error) {
     console.error("Update item error:", error);
     res.status(500).json({

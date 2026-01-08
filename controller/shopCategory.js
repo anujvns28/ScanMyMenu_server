@@ -55,11 +55,11 @@ exports.getShopCategories = async (req, res) => {
   try {
     const shopId = req.body.shopId;
     const categories = await ShopCategory.find({
-      shop:shopId,
-      isEnabled: true
+      shop: shopId,
+      isEnabled: true,
     })
-      .populate("category", "name image description")
-      .populate("tags","name color")
+      .populate("category", "name image description dietType")
+      .populate("tags", "name color")
       .sort({ order: 1 });
 
     return res.status(200).json({

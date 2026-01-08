@@ -16,7 +16,7 @@ const categorySchema = new mongoose.Schema(
 
     image: {
       type: String,
-      required: true, 
+      required: true,
     },
 
     isActive: {
@@ -26,7 +26,12 @@ const categorySchema = new mongoose.Schema(
 
     usedByCount: {
       type: Number,
-      default: 0, 
+      default: 0,
+    },
+    dietType: {
+      type: String,
+      enum: ["veg", "non-veg", "mixed"],
+      default: "mixed",
     },
   },
   { timestamps: true }
