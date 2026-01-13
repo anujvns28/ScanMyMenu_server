@@ -6,33 +6,26 @@ const {
   getProductReviews,
   getProductRatingSummary,
   addReview,
+  hasReviewed,
 } = require("../controller/rating&review.js");
 const { auth } = require("../middleware/auth.js");
-
-
 
 /* ================= USER ACTIONS ================= */
 
 // Add Review (with images)
-router.post(
-  "/add",
-  auth,
-  addReview
-);
+router.post("/add", auth, addReview);
 
 // Edit Review
-router.put(
-  "/edit",
-  auth,
-  editReview
-);
+router.put("/edit", auth, editReview);
 
 /* ================= FETCH ================= */
 
 // Get all reviews of a product
-router.get("/allReview", getProductReviews);
+router.post("/allReview", getProductReviews);
 
 // Get rating summary (stars, bars, avg)
-router.get("/ratngSummary", getProductRatingSummary);
+router.post("/ratingSummary", getProductRatingSummary);
+
+router.post("/has-reviewed", auth, hasReviewed);
 
 module.exports = router;

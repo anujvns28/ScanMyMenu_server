@@ -23,7 +23,7 @@ dbConnection();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://10.54.219.153:5173"],
+    origin: ["http://localhost:5173", "http://10.202.3.153:5173"],
     credentials: true,
   })
 );

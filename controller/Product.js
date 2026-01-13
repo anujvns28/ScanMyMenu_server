@@ -129,6 +129,7 @@ exports.updateItemField = async (req, res) => {
   try {
     let { itemId, field, value } = req.body;
 
+
     if (!itemId || !field) {
       return res.status(400).json({
         success: false,
@@ -146,6 +147,9 @@ exports.updateItemField = async (req, res) => {
       "preparationTime",
       "image",
       "tags",
+      "portion",
+      "ingredients",
+      "spiceLevel",
     ];
 
     if (!allowedFields.includes(field)) {
@@ -155,9 +159,11 @@ exports.updateItemField = async (req, res) => {
       });
     }
 
-    if (field == "tags") {
+    if (field == "tags" || field == "ingredients") {
       value = req.body["value[]"];
     }
+
+    console.log(req.body, "this is value");
 
     if (field === "image") {
       if (!req.files) {

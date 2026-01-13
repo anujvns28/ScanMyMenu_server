@@ -189,3 +189,29 @@ exports.getMyShop = async (req, res) => {
     });
   }
 };
+
+exports.getShopDetails = async (req, res) => {
+  try {
+    const { shopId } = req.body;
+    const shop = await Shop.findById(shopId);
+
+    if (!shop) {
+      return res.status(200).json({
+        success: true,
+        data: null,
+        message: "No shop created yet",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: shop,
+    });
+  } catch (err) {
+    console.log("Fetch Shop Error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch shop details",
+    });
+  }
+};

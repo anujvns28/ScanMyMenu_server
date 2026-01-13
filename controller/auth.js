@@ -100,12 +100,33 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.googleCallback = (req, res) => {
+exports.googleCallbackForShop = (req, res) => {
   // Successful login
   const token = generateToken(req.user._id);
 
   res.redirect(`http://localhost:5173/dashbord?token=${token}`);
 };
+
+exports.googleCallbackForUser = (req, res) => {
+  try {
+    const token = generateToken(req.user._id);
+
+    let shopId = null;
+
+    if (typeof req.query.state === "string") {
+      shopId = JSON.parse(req.query.state).shopId;
+    } else {
+      shopId = req.query.state.shopId;
+    }
+
+    res.redirect(`http://localhost:5173/menu/${shopId}?token=${token}`);
+  } catch (err) {
+    console.error("Google Callback Error", err);
+    res.redirect("http://localhost:5173/login");
+  }
+};
+
+
 
 exports.loginWithToken = async (req, res) => {
   try {

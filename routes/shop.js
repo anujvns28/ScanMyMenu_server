@@ -9,9 +9,11 @@ const {
   updateShopAddress,
   updateShopTiming,
   getMyShop,
+  getShopDetails,
 } = require("../controller/shop");
 
 router.get("/my-shop", auth, isOwner, getMyShop);
+router.post("/getShopDetails", getShopDetails);
 
 // ===== STEP 1 =====
 router.put("/profile", auth, isOwner, updateShopProfile);
