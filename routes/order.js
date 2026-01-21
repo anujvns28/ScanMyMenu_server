@@ -9,7 +9,7 @@ const {
   getMyActiveOrder,
 } = require("../controller/Order");
 
-const { auth, isShopOwner } = require("../middlewares/auth");
+const { auth, isOwner } = require("../middleware/auth");
 
 // User places order (before payment)
 router.post("/create", auth, createOrder);
@@ -21,9 +21,9 @@ router.post("/payment/verify", auth, verifyPayment);
 router.get("/my-active", auth, getMyActiveOrder);
 
 // Kitchen – get active orders
-router.get("/kitchen/:shopId", auth, isShopOwner, getKitchenOrders);
+router.get("/kitchen/:shopId", auth, isOwner, getKitchenOrders);
 
 // Kitchen – update status
-router.put("/:orderId/status", auth, isShopOwner, updateOrderStatus);
+router.put("/updateOrderStatus", auth, isOwner, updateOrderStatus);
 
 module.exports = router;

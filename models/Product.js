@@ -48,6 +48,11 @@ const productSchema = new mongoose.Schema(
       enum: ["small", "medium", "large", "full", "half"],
     },
 
+    type: {
+      type: String,
+      enum: ["veg", "non-veg", "mix"],
+    },
+
     ingredients: [
       {
         type: String,

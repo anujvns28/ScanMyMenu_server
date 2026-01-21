@@ -327,4 +327,70 @@ export const hasReviewed = async (req, res) => {
   }
 };
 
+export const getShopReviewSummary = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const shop = await Shop.find({ owner: userId }).select("name");
+
+    const shopId = shop[0]._id;
+
+    if (!shopId) {
+      return res.status(404).json({
+        success: false,
+        message: "shospId is required",
+      });
+    }
+
+    const data = await RatingandReview.aggregate([
+      { $match: { shop: shopId } },
+
+      {
+        $group: {
+          _id: null,
+          avgRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
+
+          one: { $sum: { $cond: [{ $eq: ["$rating", 1] }, 1, 0] } },
+          two: { $sum: { $cond: [{ $eq: ["$rating", 2] }, 1, 0] } },
+          three: { $sum: { $cond: [{ $eq: ["$rating", 3] }, 1, 0] } },
+          four: { $sum: { $cond: [{ $eq: ["$rating", 4] }, 1, 0] } },
+          five: { $sum: { $cond: [{ $eq: ["$rating", 5] }, 1, 0] } },
+        },
+      },
+    ]);
+
+    if (!data.length) {
+      return res.json({
+        avgRating: 0,
+        totalReviews: 0,
+        breakdown: [],
+      });
+    }
+
+    const s = data[0];
+
+    res.json({
+      avgRating: Number(s.avgRating.toFixed(1)),
+      totalReviews: s.totalReviews,
+      breakdown: [
+        { star: 5, count: s.five },
+        { star: 4, count: s.four },
+        { star: 3, count: s.three },
+        { star: 2, count: s.two },
+        { star: 1, count: s.one },
+      ],
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+
+
+
+
 

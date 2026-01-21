@@ -7,8 +7,9 @@ const {
   getProductRatingSummary,
   addReview,
   hasReviewed,
+  getShopReviewSummary,
 } = require("../controller/rating&review.js");
-const { auth } = require("../middleware/auth.js");
+const { auth, isOwner } = require("../middleware/auth.js");
 
 /* ================= USER ACTIONS ================= */
 
@@ -27,5 +28,7 @@ router.post("/allReview", getProductReviews);
 router.post("/ratingSummary", getProductRatingSummary);
 
 router.post("/has-reviewed", auth, hasReviewed);
+
+router.get("/getShopReviewSummary", auth, isOwner, getShopReviewSummary);
 
 module.exports = router;
