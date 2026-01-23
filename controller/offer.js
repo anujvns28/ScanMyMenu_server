@@ -115,7 +115,7 @@ exports.getAllOffers = async (req, res) => {
     const offers = await Offer.find({ shop: shop._id })
       .populate({
         path: "items.product",
-        select: "name price image", // jo chahiye wahi bhejo
+        select: "name price image",
       })
       .sort({ createdAt: -1 });
 
@@ -131,10 +131,6 @@ exports.getAllOffers = async (req, res) => {
   }
 };
 
-
-
-
-
 /* =====================================================
    3️⃣ FETCH ACTIVE OFFERS (FOR YOU PAGE)
    ===================================================== */
@@ -149,7 +145,12 @@ exports.getActiveOffers = async (req, res) => {
       isActive: true,
       startDate: { $lte: now },
       endDate: { $gte: now },
-    }).sort({ isFeatured: -1, createdAt: -1 });
+    })
+      .populate({
+        path: "items.product",
+        select: "name price image",
+      })
+      .sort({ isFeatured: -1, createdAt: -1 });
 
     res.json({
       success: true,
@@ -162,9 +163,6 @@ exports.getActiveOffers = async (req, res) => {
     });
   }
 };
-
-
-
 
 /* =====================================================
    4️⃣ EDIT OFFER (FIELD BY FIELD UPDATE)
@@ -183,16 +181,10 @@ exports.updateOffer = async (req, res) => {
     }
 
     /* ---------------- ALLOWED FIELDS ---------------- */
-    const {
-      title,
-      description,
-      offerPrice,
-      startDate,
-      endDate,
-      isActive,
-    } = req.body;
+    const { title, description, offerPrice, startDate, endDate, isActive } =
+      req.body;
 
-    console.log(req.body)
+    console.log(req.body);
 
     /* ---------------- UPDATE TEXT FIELDS ---------------- */
     if (title !== undefined) offer.title = title;
@@ -248,18 +240,19 @@ exports.updateOffer = async (req, res) => {
   }
 };
 
-
-
-
-
-/* =====================================================
-   5️⃣ TOGGLE OFFER (ON / OFF)
-   ===================================================== */
-
-exports.toggleOfferStatus = async (req, res) => {
+exports.deleteOffer = async (req, res) => {
   try {
     const { offerId } = req.params;
+    const userId = req.user.id;
 
+    if (!offerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Offer ID is required",
+      });
+    }
+
+    // Find offer
     const offer = await Offer.findById(offerId);
 
     if (!offer) {
@@ -269,18 +262,17 @@ exports.toggleOfferStatus = async (req, res) => {
       });
     }
 
-    offer.isActive = !offer.isActive;
-    await offer.save();
+    await Offer.findByIdAndDelete(offerId);
 
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: `Offer ${offer.isActive ? "activated" : "deactivated"}`,
-      isActive: offer.isActive,
+      message: "Offer deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("DELETE OFFER ERROR:", error);
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to delete offer",
     });
   }
 };
