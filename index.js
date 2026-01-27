@@ -25,7 +25,7 @@ dbConnection();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://10.130.46.153:5173"],
+    origin: ["http://localhost:5173", "https://scanmymenu.vercel.app"],
     credentials: true,
   }),
 );
