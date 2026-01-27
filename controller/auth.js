@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcrypt");
 const user = require("../models/user");
 const { generateToken } = require("../utility/generateToken");
@@ -104,7 +103,7 @@ exports.googleCallbackForShop = (req, res) => {
   // Successful login
   const token = generateToken(req.user._id);
 
-  res.redirect(`http://localhost:5173/dashbord?token=${token}`);
+  res.redirect(`https://scanmymenu.vercel.app/dashbord?token=${token}`);
 };
 
 exports.googleCallbackForUser = (req, res) => {
@@ -119,14 +118,12 @@ exports.googleCallbackForUser = (req, res) => {
       shopId = req.query.state.shopId;
     }
 
-    res.redirect(`http://localhost:5173/menu/${shopId}?token=${token}`);
+    res.redirect(`https://scanmymenu.vercel.app/menu/${shopId}?token=${token}`);
   } catch (err) {
     console.error("Google Callback Error", err);
-    res.redirect("http://localhost:5173/login");
+    res.redirect("https://scanmymenu.vercel.app/login");
   }
 };
-
-
 
 exports.loginWithToken = async (req, res) => {
   try {
@@ -153,4 +150,3 @@ exports.loginWithToken = async (req, res) => {
     });
   }
 };
-

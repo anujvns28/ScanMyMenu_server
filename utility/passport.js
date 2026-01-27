@@ -16,7 +16,6 @@ passport.use(
       try {
         let user = await User.findOne({
           email: profile.emails[0].value,
-          role: "owner",
         });
 
         if (!user) {
@@ -32,8 +31,8 @@ passport.use(
       } catch (err) {
         return done(err, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 /* CUSTOMER */
@@ -49,7 +48,6 @@ passport.use(
       try {
         let user = await User.findOne({
           email: profile.emails[0].value,
-          role: "user",
         });
 
         console.log(user, "this is user ");
@@ -67,8 +65,8 @@ passport.use(
       } catch (err) {
         return done(err, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.serializeUser((user, done) => {

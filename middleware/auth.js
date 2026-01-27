@@ -40,7 +40,7 @@ exports.isAdmin = async (req, res, next) => {
   } catch (err) {
     return res.status(403).json({
       success: false,
-      message: "Error ocurring in stduent middlewrre",
+      message: "Error ocurring in admin middlewrre",
     });
   }
 };
@@ -59,7 +59,7 @@ exports.isOwner = async (req, res, next) => {
   } catch (err) {
     return res.status(403).json({
       success: false,
-      message: "Error ocurring in stduent middlewrre",
+      message: "Error ocurring in owner middlewrre",
     });
   }
 };
