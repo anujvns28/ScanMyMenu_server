@@ -7,6 +7,7 @@ const {
   getKitchenOrders,
   updateOrderStatus,
   getMyActiveOrder,
+  deleteOrderAfterCompletion,
 } = require("../controller/Order");
 
 const { auth, isOwner } = require("../middleware/auth");
@@ -25,5 +26,7 @@ router.get("/kitchen/:shopId", auth, isOwner, getKitchenOrders);
 
 // Kitchen – update status
 router.put("/updateOrderStatus", auth, isOwner, updateOrderStatus);
+
+router.delete("/delete/:orderId", deleteOrderAfterCompletion);
 
 module.exports = router;

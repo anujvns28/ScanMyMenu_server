@@ -2,20 +2,53 @@ const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema(
   {
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
+    // product OR offer
+    type: {
+      type: String,
+      enum: ["product", "offer"],
       required: true,
     },
 
-    // Snapshot (so price/name never change later)
-    name: String,
-    price: Number,
+    /* ---------- PRODUCT ITEM ---------- */
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: function () {
+        return this.type === "product";
+      },
+    },
+
+    /* ---------- OFFER ITEM ---------- */
+    offer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+      required: function () {
+        return this.type === "offer";
+      },
+    },
+
+    /* ---------- SNAPSHOT ---------- */
+    name: String, // product name OR offer title
+    price: Number, // product price OR offerPrice
     qty: Number,
     image: String,
+
+    /* ---------- OFFER BREAKDOWN ---------- */
+    items: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        name: String,
+        qty: Number,
+        image: String,
+      },
+    ],
   },
-  { _id: false }
+  { _id: false },
 );
+
 
 const orderSchema = new mongoose.Schema(
   {

@@ -1,5 +1,6 @@
 const Order = require("../models/order");
 const Product = require("../models/Product");
+const Offer = require("../models/offers");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 
@@ -22,39 +23,79 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // total from DB
     let subtotal = 0;
     const finalItems = [];
 
     for (let item of cartItems) {
-      const product = await Product.findById(item.productId);
+      /* ================= PRODUCT ================= */
+      if (item.type === "product") {
+        const product = await Product.findById(item.productId);
 
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: "Product not found",
+        if (!product) {
+          return res.status(404).json({
+            success: false,
+            message: "Product not found",
+          });
+        }
+
+        subtotal += product.price * item.qty;
+
+        finalItems.push({
+          type: "product",
+          product: product._id,
+          name: product.name,
+          price: product.price,
+          qty: item.qty,
+          image: product.image,
         });
+
+        // increase product order count
+        await Product.findByIdAndUpdate(product._id, {
+          $inc: { orderCount: item.qty },
+        });
+      } else if (item.type === "offer") {
+        /* ================= OFFER / COMBO ================= */
+        const offer = await Offer.findById(item.offerId).populate(
+          "items.product",
+        );
+
+        if (!offer) {
+          return res.status(404).json({
+            success: false,
+            message: "Offer not found",
+          });
+        }
+
+        subtotal += offer.offerPrice * item.qty;
+
+        finalItems.push({
+          type: "offer",
+          offer: offer._id,
+          name: offer.title,
+          price: offer.offerPrice,
+          qty: item.qty,
+          image: offer.image,
+          items: offer.items.map((i) => ({
+            product: i.product._id,
+            name: i.product.name,
+            qty: i.quantity * item.qty,
+            image: i.product.image,
+          })),
+        });
+
+        // 🔥 increment product order count for analytics
+        for (let i of offer.items) {
+          await Product.findByIdAndUpdate(i.product._id, {
+            $inc: { orderCount: i.quantity * item.qty },
+          });
+        }
       }
-
-      subtotal += product.price * item.qty;
-
-      finalItems.push({
-        product: product._id,
-        name: product.name,
-        price: product.price,
-        qty: item.qty,
-        image: product.image,
-      });
-
-      await Product.findByIdAndUpdate(product._id, {
-        $inc: { orderCount: item.qty },
-      });
     }
 
     const gst = Math.round(subtotal * 0.05);
     const total = subtotal + gst;
 
-    // Create Order
+    /* ================= CREATE ORDER ================= */
     const order = await Order.create({
       user: userId,
       shop: shopId,
@@ -70,14 +111,13 @@ exports.createOrder = async (req, res) => {
       paymentStatus: "PENDING",
     });
 
-    // Create Razorpay order
+    /* ================= RAZORPAY ================= */
     const razorpayOrder = await razorpay.orders.create({
       amount: total * 100,
       currency: "INR",
       receipt: order._id.toString(),
     });
 
-    // Save Razorpay Order
     order.razorpayOrderId = razorpayOrder.id;
     await order.save();
 
@@ -90,12 +130,13 @@ exports.createOrder = async (req, res) => {
     });
   } catch (err) {
     console.error("Create Order Error:", err);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to create order",
     });
   }
 };
+
 
 exports.verifyPayment = async (req, res) => {
   try {
@@ -291,6 +332,43 @@ exports.getMyActiveOrder = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch order",
+    });
+  }
+};
+
+exports.deleteOrderAfterCompletion = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // ✅ Allow delete only if lifecycle complete
+    if (!["SERVED", "CANCELLED"].includes(order.status)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Order cannot be deleted until it is completed or cancelled",
+      });
+    }
+
+    await Order.findByIdAndDelete(orderId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Order deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete Order Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete order",
     });
   }
 };
