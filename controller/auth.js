@@ -103,7 +103,7 @@ exports.googleCallbackForShop = (req, res) => {
   // Successful login
   const token = generateToken(req.user._id);
 
-  res.redirect(`https://scanmymenu.vercel.app/dashbord?token=${token}`);
+  res.redirect(`https://scanmymenu.vercel.app/shop?token=${token}`);
 };
 
 exports.googleCallbackForUser = (req, res) => {
