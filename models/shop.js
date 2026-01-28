@@ -12,7 +12,6 @@ const shopSchema = new mongoose.Schema(
     shopProfile: {
       name: { type: String, trim: true },
       logo: { type: String },
-      slug: { type: String, unique: true },
     },
 
     contactInfo: {
@@ -57,7 +56,7 @@ const shopSchema = new mongoose.Schema(
 
     isActive: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Shop", shopSchema);
