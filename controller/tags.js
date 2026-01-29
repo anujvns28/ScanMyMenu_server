@@ -1,13 +1,5 @@
 const Tag = require("../models/tags");
 
-// slug helper
-const slugify = (text) => {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
-};
 
 // ================= CREATE TAG =================
 exports.createTag = async (req, res) => {
@@ -30,12 +22,9 @@ exports.createTag = async (req, res) => {
       });
     }
 
-    //  Generate slug
-    const slug = slugify(name);
-
     //  Check duplicate (same name or slug with same type)
     const existingTag = await Tag.findOne({
-      $or: [{ name }, { slug }],
+      name,
       type,
     });
 
@@ -49,7 +38,6 @@ exports.createTag = async (req, res) => {
     //  Create tag
     const tag = await Tag.create({
       name,
-      slug,
       color,
       type,
     });
@@ -92,11 +80,8 @@ exports.updateTag = async (req, res) => {
 
     //  If name is updated → regenerate slug
     if (name && name !== tag.name) {
-      const newSlug = slugify(name);
-
       // check duplicate (same type)
       const duplicateTag = await Tag.findOne({
-        slug: newSlug,
         type: type || tag.type,
         _id: { $ne: tagId },
       });
@@ -109,7 +94,6 @@ exports.updateTag = async (req, res) => {
       }
 
       tag.name = name;
-      tag.slug = newSlug;
     }
 
     //  Update other fields

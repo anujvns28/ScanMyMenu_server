@@ -5,16 +5,7 @@ const tagSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
-    },
-
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      lowercase: true,
     },
 
     color: {
@@ -39,7 +30,7 @@ const tagSchema = new mongoose.Schema(
       min: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Tag", tagSchema);
