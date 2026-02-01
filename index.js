@@ -4,6 +4,7 @@ const {dbConnection}  = require("./config/connectDB");
 const cors = require("cors");
 const passport = require("./utility/passport.js");
 const session = require("express-session");
+const path = require("path");
 
 const authRoutes = require("./routes/auth.js");
 const googleAuthRoutes = require("./routes/google.js");
@@ -17,12 +18,17 @@ const orderRoutes = require("./routes/order.js");
 const offerRoutes = require("./routes/offer.js");
 const { cloudinaryConnect } = require("./config/cloudinary.js");
 const fileUpload = require("express-fileupload");
+const { seedFakeReviews } = require("./faker/fakeReview.js");
+const {
+  syncProductRatings,
+  syncShopRatings,
+} = require("./faker/syncRating.js");
 
 const port = process.env.PORT || 4000;
 
 // data base connection
 dbConnection();
-
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     origin: [
@@ -53,6 +59,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 //mounting
 app.use("/api/v1/auth", authRoutes);

@@ -282,7 +282,7 @@ exports.getProductDetails = async (req, res) => {
     }
 
     const product = await Product.findById(productId)
-      .populate("tags", "name")
+      .populate("tags", "name color")
       .populate("category", "name");
 
     if (!product) {
