@@ -50,7 +50,8 @@ const productSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["veg", "non-veg", "mix"],
+      enum: ["none", "veg", "non-veg", "mix"],
+      default: "none",
     },
 
     ingredients: [
@@ -62,8 +63,8 @@ const productSchema = new mongoose.Schema(
 
     spiceLevel: {
       type: String,
-      enum: ["mild", "medium", "spicy", "extra-spicy"],
-      default: "medium",
+      enum: ["none", "mild", "medium", "spicy", "extra-spicy"],
+      default: "none",
     },
 
     isAvailable: {
@@ -96,7 +97,7 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Product",productSchema)
