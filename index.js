@@ -74,6 +74,26 @@ app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/offers", offerRoutes);
 cloudinaryConnect();
 
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
-}); 
+});
+
+// Keep-alive function
+const keepWarm = () => {
+  const interval = 5 * 60 * 1000;
+  const keepAliveUrl = `https://scanmymenu-server.onrender.com/keep-alive`;
+
+  setInterval(async () => {
+    try {
+      console.log("Sending keep-alive request");
+      const response = await axios.get(keepAliveUrl);
+      console.log(`Keep-alive request status: ${response.status}`);
+    } catch (error) {
+      console.error("Error sending keep-alive request:", error);
+    }
+  }, interval);
+};
+
+keepWarm();
