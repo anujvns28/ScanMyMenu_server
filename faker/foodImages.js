@@ -36,8 +36,6 @@ const foodImages = {
     "/public/food/rice6.jpg",
     "/public/food/rice7.jpg",
     "/public/food/rice8.jpg",
-    "/public/food/rice9.jpg",
-    "/public/food/rice10.jpg",
   ],
 
   biryani: [

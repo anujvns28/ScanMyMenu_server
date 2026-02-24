@@ -16,7 +16,10 @@ export const addReview = async (req, res) => {
       });
     }
 
-    // 1️⃣ Block duplicate review
+    console.log(productId, "ths s product ");
+    console.log(userId, "this is userId");
+
+    // Block duplicate review
     const alreadyReviewed = await RatingandReview.findOne({
       user: userId,
       product: productId,
@@ -29,7 +32,7 @@ export const addReview = async (req, res) => {
       });
     }
 
-    // 2️⃣ Upload images
+    //  Upload images
     let files = req.files?.images;
     if (!files) files = [];
     else if (!Array.isArray(files)) files = [files];
@@ -40,13 +43,13 @@ export const addReview = async (req, res) => {
       for (const file of files) {
         const upload = await uploadImageToCloudinary(
           file,
-          process.env.FOLDER_NAME
+          process.env.FOLDER_NAME,
         );
         uploadedImages.push(upload.secure_url);
       }
     }
 
-    // 3️⃣ Create review
+    //  Create review
     const review = await RatingandReview.create({
       user: userId,
       product: productId,
@@ -57,7 +60,7 @@ export const addReview = async (req, res) => {
       isVerifiedPurchase: true,
     });
 
-    // 4️⃣ Update product star stats
+    //  Update product star stats
     let ratingDoc = await OverAllRatingAndReview.findOne({
       product: productId,
     });
@@ -88,19 +91,19 @@ export const addReview = async (req, res) => {
         ratingDoc.starCounts[5] * 5;
 
       ratingDoc.averageRating = (totalStars / ratingDoc.totalRatings).toFixed(
-        1
+        1,
       );
 
       await ratingDoc.save();
     }
 
-    // 5️⃣ Sync Product from ratingDoc (🔥 no rounding bug)
+    //  Sync Product from ratingDoc (🔥 no rounding bug)
     await Product.findByIdAndUpdate(productId, {
       rating: ratingDoc.averageRating,
       reviewsCount: ratingDoc.totalRatings,
     });
 
-    // 6️⃣ Recalculate Shop rating correctly
+    //  Recalculate Shop rating correctly
     const shopReviews = await RatingandReview.find({ shop: shopId });
 
     const shopAvg =
