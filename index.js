@@ -32,11 +32,7 @@ dbConnection();
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://10.81/171.153:5173",
-      "https://scanmymenu.vercel.app",
-    ],
+    origin: ["http://localhost:5173", "https://scanmymenu.vercel.app"],
     credentials: true,
   }),
 );
