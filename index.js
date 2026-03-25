@@ -57,7 +57,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //mounting
 app.use("/api/v1/auth", authRoutes);
 app.use("/auth", googleAuthRoutes);
@@ -71,8 +70,6 @@ app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/offers", offerRoutes);
 cloudinaryConnect();
 
-
-
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
@@ -80,7 +77,7 @@ app.listen(port, () => {
 // Keep-alive function
 const keepWarm = () => {
   const interval = 5 * 60 * 1000;
-  const keepAliveUrl = `https://scanmymenu-server.onrender.com/keep-alive`;
+  const keepAliveUrl = `https://scanmymenu-server-57vl.onrender.com/keep-alive`;
 
   setInterval(async () => {
     try {

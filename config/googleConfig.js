@@ -3,7 +3,7 @@ export const googleKeys = {
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
   userCallback:
-    "https://scanmymenu-server.onrender.com/auth/user/google/callback",
+    "https://scanmymenu-server-57vl.onrender.com/auth/user/google/callback",
   shopCallback:
-    "https://scanmymenu-server.onrender.com/auth/shop/google/callback",
+    "https://scanmymenu-server-57vl.onrender.com/auth/shop/google/callback",
 };
